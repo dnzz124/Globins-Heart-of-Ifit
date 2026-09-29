@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#101311">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>Um Mundo, Vários Caminhos</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<main id="menu" class="screen">
+    <div class="panel title-panel">
+        <div class="decoration">◆ ◆ ◆</div>
+        <span class="eyebrow">UMA HISTÓRIA INTERATIVA</span>
+
+        <h1>UM MUNDO</h1>
+        <h2>VÁRIOS CAMINHOS</h2>
+
+        <div class="gold-line"></div>
+
+        <p>
+            Cinco irmãos goblins foram separados por um livro mágico.<br>
+            Escolha o irmão que recitará o verso e descubra sua dimensão.
+        </p>
+
+        <button id="startButton" class="main-button">
+            COMEÇAR
+        </button>
+    </div>
+</main>
+
+
+
+<section id="introScreen" class="cinematic-screen hidden" aria-label="Introdução cinematográfica">
+    <canvas id="introCanvas" width="960" height="540" aria-label="Animação da ilha e dos aventureiros"></canvas>
+    <div class="cinema-vignette" aria-hidden="true"></div>
+    <div class="cinema-topline"><span id="introChapter">PRÓLOGO</span><span id="introCounter">CENA 1 / 11</span></div>
+    <button id="skipIntroButton" class="cinema-skip" type="button">PULAR INTRODUÇÃO ↗</button>
+    <div class="cinema-caption" aria-live="polite">
+        <div class="caption-heading"><span class="caption-mark">✦</span><span id="introSceneTitle">Uma ilha em equilíbrio</span></div>
+        <p id="introNarration" data-voice-key="intro_island_01">Dizem que toda ilha tem um coração.</p>
+        <div class="caption-bottom"><div class="cinema-progress"><i id="introProgress"></i></div><button id="introNextButton" type="button">CONTINUAR <span aria-hidden="true">→</span></button></div>
+    </div>
+</section>
+
+<section id="characterScreen" class="screen hidden">
+
+    <header class="screen-header">
+
+        <button class="back-button" data-back="menu">
+            ← MENU
+        </button>
+
+        <div>
+            <span>01</span>
+            <h1>QUAL IRMÃO VAI LER O LIVRO?</h1>
+        </div>
+
+        <span class="header-label">
+            PERSONAGENS
+        </span>
+
+    </header>
+
+    <div id="characters" class="characters-container"></div>
+
+</section>
+
+
+<section id="moodScreen" class="screen hidden">
+
+    <div class="panel mood-panel">
+
+        <button
+            class="back-button panel-back"
+            data-back="characters">
+            ← PERSONAGENS
+        </button>
+
+        <span class="eyebrow gold">
+            CAPÍTULO 01
+        </span>
+
+        <h1>COMO VOCÊ ESTÁ?</h1>
+
+        <p>
+            Seu estado de espírito influencia sua velocidade.
+        </p>
+
+        <div class="moods">
+
+            <button data-mood="feliz">
+                <b>☀</b>
+                <span>FELIZ</span>
+                <small>Rápido</small>
+            </button>
+
+            <button data-mood="calmo">
+                <b>✦</b>
+                <span>CALMO</span>
+                <small>Preciso</small>
+            </button>
+
+            <button data-mood="curioso">
+                <b>?</b>
+                <span>CURIOSO</span>
+                <small>Equilibrado</small>
+            </button>
+
+            <button data-mood="triste">
+                <b>☂</b>
+                <span>TRISTE</span>
+                <small>Lento</small>
+            </button>
+
+            <button data-mood="corajoso">
+                <b>!</b>
+                <span>CORAJOSO</span>
+                <small>Muito rápido</small>
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section id="gameScreen" class="game-screen hidden">
+
+    <div id="gameFrame">
+
+        <canvas
+            id="gameCanvas"
+            width="960"
+            height="540">
+        </canvas>
+
+
+        <div id="hud">
+
+            <div>
+                <small>PERSONAGEM</small>
+                <strong id="characterName">---</strong>
+            </div>
+
+            <div>
+                <small>HUMOR</small>
+                <strong id="moodName">---</strong>
+            </div>
+
+            <div class="hud-right">
+                <small>LOCAL</small>
+                <strong id="locationName">---</strong>
+            </div>
+
+        </div>
+
+
+        <button
+            id="gameMenuButton"
+            class="game-menu-button">
+            ☰
+        </button>
+
+        <button id="mapButton" class="map-button" type="button" aria-label="Abrir mapa">🗺 MAPA <small>(M)</small></button>
+
+
+        <div
+            id="playerHealth"
+            class="health-box player-health">
+
+            <div class="health-name">
+
+                <span id="battlePlayerName">
+                    JOGADOR
+                </span>
+
+                <b id="playerHPText">
+                    100 / 100
+                </b>
+
+            </div>
+
+            <div class="health-bar">
+                <i id="playerHealthFill"></i>
+            </div>
+
+        </div>
+
+
+        <div
+            id="enemyHealth"
+            class="health-box enemy-health hidden">
+
+            <div class="health-name">
+
+                <span id="enemyName">
+                    CRIATURA
+                </span>
+
+                <b id="enemyHPText">
+                    100 / 100
+                </b>
+
+            </div>
+
+            <div class="health-bar">
+                <i
+                    id="enemyHealthFill"
+                    class="enemy-fill">
+                </i>
+            </div>
+
+        </div>
+
+
+        <div
+            id="pathHint"
+            class="path-hint hidden">
+            ESCOLHA UMA SAÍDA
+        </div>
+
+
+        <div
+            id="routeButtons"
+            class="route-panel hidden">
+
+            <div class="route-title">
+
+                <span>NOVA SAÍDA</span>
+
+                <button id="closeRoutes">
+                    ×
+                </button>
+
+            </div>
+
+            <p>
+                Para onde você quer seguir?
+            </p>
+
+            <div class="route-grid">
+
+                <button data-route="safe">
+                    <b>01</b>
+                    <span>TRILHA SEGURA</span>
+                    <small>Sem combate</small>
+                </button>
+
+                <button data-route="battle">
+                    <b>02</b>
+                    <span>PASSAGEM SOMBRIA</span>
+                    <small>Perigo elevado</small>
+                </button>
+
+                <button data-route="explore">
+                    <b>03</b>
+                    <span>TRILHA DA EXPLORAÇÃO</span>
+                    <small>Chance de descobrir algo</small>
+                </button>
+
+                <button data-route="hidden">
+                    <b>04</b>
+                    <span>PASSAGEM ESCONDIDA</span>
+                    <small>Caminho inesperado</small>
+                </button>
+
+                <button data-route="look">
+                    <b>05</b>
+                    <span>OBSERVAR ANTES</span>
+                    <small>Revela uma pista</small>
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div id="battleUI" class="battle-ui hidden">
+
+            <div class="battle-top">
+
+                <div>
+                    <strong id="battleEnemyTitle">
+                        CRIATURA
+                    </strong>
+
+                    <small>
+                        ENCONTRO
+                    </small>
+                </div>
+
+                <img
+                    id="enemyImage"
+                    src="images/inimigo.png"
+                    alt="Inimigo">
+
+            </div>
+
+            <div
+                id="battleMessage"
+                class="battle-message">
+                Uma criatura apareceu!
+            </div>
+
+            <div class="battle-buttons">
+
+                <button id="attackButton">
+                    ⚔ ATACAR
+                </button>
+
+                <button id="defendButton">
+                    🛡 DEFENDER
+                </button>
+
+                <button id="runButton">
+                    → FUGIR
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div
+            id="dialogue"
+            class="dialogue hidden">
+
+            <div class="dialogue-header">
+
+                <strong id="dialogueName">
+                    NARRADOR
+                </strong>
+
+                <span>✦</span>
+
+            </div>
+
+            <p id="dialogueText"></p>
+
+            <div
+                id="dialogueChoices"
+                class="dialogue-choices hidden"
+                role="group"
+                aria-label="Respostas do personagem">
+            </div>
+
+            <button id="dialogueContinue">
+                CONTINUAR →
+            </button>
+
+        </div>
+
+
+        <div id="mapOverlay" class="map-overlay hidden" role="dialog" aria-modal="true" aria-label="Mapas">
+            <div class="map-window">
+                <div class="map-window-header">
+                    <div><span class="map-eyebrow">CARTOGRAFIA DA ILHA</span><h2>MAPAS</h2></div>
+                    <button id="closeMap" type="button" aria-label="Fechar mapa">×</button>
+                </div>
+                <div class="map-tabs">
+                    <button id="worldMapTab" class="active" type="button">MAPA DO MUNDO</button>
+                    <button id="villageMapTab" type="button">MAPA DA VILA</button>
+                </div>
+                <canvas id="mapCanvas" width="620" height="360" aria-label="Mapa da região"></canvas>
+                <p class="map-help">M / toque no botão do mapa para abrir ou fechar. Explore as regiões para revelá-las.</p>
+            </div>
+        </div>
+
+        <div id="mobileControls">
+
+            <div class="joystick">
+
+                <button
+                    class="touch-button up"
+                    data-key="up">
+                    ▲
+                </button>
+
+                <button
+                    class="touch-button left"
+                    data-key="left">
+                    ◀
+                </button>
+
+                <button
+                    class="touch-button down"
+                    data-key="down">
+                    ▼
+                </button>
+
+                <button
+                    class="touch-button right"
+                    data-key="right">
+                    ▶
+                </button>
+
+            </div>
+
+            <div class="mobile-action-buttons">
+                <button id="mobileMap" class="map-touch-button" aria-label="Abrir mapa" title="Mapa">🗺</button>
+                <button id="mobileJump" class="jump-button" aria-label="Pular" title="Pular">⤴</button>
+                <button
+                    id="mobileInteract"
+                    class="interact-button"
+                    aria-label="Interagir">
+                    E
+                </button>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div id="controls">
+
+        <span>
+            <b>WASD</b> / <b>SETAS</b> mover
+        </span>
+
+        <span>
+            <b>E</b> interagir
+        </span>
+
+        <span>
+            <b>ESPAÇO</b> pular
+        </span>
+
+        <span>
+            <b>M</b> mapa &nbsp; <b>ESC</b> menu
+        </span>
+
+    </div>
+
+</section>
+
+
+<section id="endingScreen" class="screen hidden">
+
+    <div class="panel ending-panel">
+
+        <span class="eyebrow gold">
+            FIM DA JORNADA
+        </span>
+
+        <h1>O ENCONTRO</h1>
+
+        <div class="decoration">
+            ✦
+        </div>
+
+        <p id="endingText"></p>
+
+        <div class="ending-actions">
+
+            <button
+                id="restartButton"
+                class="main-button">
+                JOGAR NOVAMENTE
+            </button>
+
+            <button
+                id="endingMenuButton"
+                class="secondary-button">
+                VOLTAR AO MENU
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<div
+    id="pauseOverlay"
+    class="overlay hidden">
+
+    <div class="panel pause-panel">
+
+        <span class="eyebrow gold">
+            JOGO PAUSADO
+        </span>
+
+        <h1>PAUSA</h1>
+
+        <button
+            id="resumeButton"
+            class="main-button">
+            CONTINUAR
+        </button>
+
+        <button
+            id="pauseMenuButton"
+            class="secondary-button">
+            VOLTAR AO MENU
+        </button>
+
+    </div>
+
+</div>
+
+
+<div
+    id="rotateScreen"
+    class="overlay hidden">
+
+    <div class="panel rotate-panel">
+
+        <div class="phone-icon">
+            ↻
+        </div>
+
+        <h1>GIRE O CELULAR</h1>
+
+        <p>
+            Para aproveitar melhor o jogo,
+            use a tela na horizontal.
+        </p>
+
+    </div>
+
+</div>
+
+
+<script src="script.js"></script>
+
+</body>
+</html>
